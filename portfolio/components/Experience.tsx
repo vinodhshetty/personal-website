@@ -1,3 +1,8 @@
+"use client";
+
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
+
 const experiences = [
   {
     role: "Engineering Manager | Product Manager",
@@ -50,47 +55,96 @@ const experiences = [
 ];
 
 export default function Experience() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
   return (
-    <section id="experience" className="py-24 px-6 bg-slate-50">
+    <section id="experience" className="py-32 px-6 bg-[#f5f5f7] dark:bg-black transition-colors duration-500" ref={ref}>
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">Experience</h2>
-        <div className="w-12 h-1 bg-[#1E3A5F] mb-10 rounded-full" />
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <p className="text-[#6e6e73] dark:text-[#86868b] font-medium text-sm tracking-[0.2em] uppercase mb-3">
+            Career
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-16 tracking-tight">
+            Where I&apos;ve been.
+          </h2>
+        </motion.div>
 
         <div className="relative">
-          {/* Timeline line */}
-          <div className="absolute left-4 top-2 bottom-2 w-0.5 bg-slate-200 hidden sm:block" />
+          <motion.div
+            initial={{ scaleY: 0 }}
+            animate={isInView ? { scaleY: 1 } : {}}
+            transition={{ duration: 1.2, ease: [0.25, 0.1, 0.25, 1] }}
+            className="absolute left-[15px] top-2 bottom-2 w-[2px] bg-gradient-to-b from-[#1E3A5F] dark:from-blue-400 via-[#1E3A5F]/40 dark:via-blue-400/30 to-transparent origin-top hidden sm:block"
+          />
 
-          <div className="space-y-10">
+          <div className="space-y-8">
             {experiences.map((exp, i) => (
-              <div key={i} className="relative sm:pl-14">
-                {/* Timeline dot */}
-                <div className="hidden sm:flex absolute left-0 top-1 w-8 h-8 rounded-full bg-[#1E3A5F] items-center justify-center flex-shrink-0">
-                  <div className="w-3 h-3 rounded-full bg-white" />
-                </div>
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, x: -30 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.2 + i * 0.12,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+                className="relative sm:pl-14"
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={isInView ? { scale: 1 } : {}}
+                  transition={{
+                    type: "spring",
+                    stiffness: 300,
+                    damping: 20,
+                    delay: 0.3 + i * 0.12,
+                  }}
+                  className="hidden sm:flex absolute left-0 top-6 w-8 h-8 rounded-full bg-white dark:bg-[#1c1c1e] border-2 border-[#1E3A5F] dark:border-blue-400 items-center justify-center flex-shrink-0 shadow-sm"
+                >
+                  <div className="w-2.5 h-2.5 rounded-full bg-[#1E3A5F] dark:bg-blue-400" />
+                </motion.div>
 
-                <div className="bg-white rounded-xl p-6 border border-slate-100 shadow-sm">
+                <motion.div
+                  whileHover={{
+                    y: -2,
+                    boxShadow: "0 8px 40px rgba(0, 0, 0, 0.12)",
+                    transition: { type: "spring", stiffness: 300, damping: 20 },
+                  }}
+                  className="bg-white dark:bg-[#1c1c1e] rounded-2xl p-7 border border-[#e8e8ed] dark:border-[#2c2c2e] shadow-[0_2px_20px_rgba(0,0,0,0.04)] dark:shadow-[0_2px_20px_rgba(0,0,0,0.2)] transition-all duration-300"
+                >
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 mb-3">
                     <div>
-                      <h3 className="font-bold text-slate-900 text-lg">{exp.role}</h3>
-                      <p className="text-[#1E3A5F] font-medium text-sm">{exp.company}</p>
+                      <h3 className="font-bold text-[#1d1d1f] dark:text-[#f5f5f7] text-lg tracking-tight">
+                        {exp.role}
+                      </h3>
+                      <p className="text-[#1E3A5F] dark:text-blue-400 font-medium text-sm">{exp.company}</p>
                     </div>
-                    <span className="text-slate-400 text-sm font-medium whitespace-nowrap">{exp.period}</span>
+                    <span className="text-[#86868b] text-sm font-medium whitespace-nowrap">
+                      {exp.period}
+                    </span>
                   </div>
 
-                  <p className="text-slate-600 text-sm leading-relaxed mb-4">{exp.highlight}</p>
+                  <p className="text-[#6e6e73] dark:text-[#a1a1a6] text-sm leading-relaxed mb-4">
+                    {exp.highlight}
+                  </p>
 
                   <div className="flex flex-wrap gap-2">
                     {exp.tags.map((tag) => (
                       <span
                         key={tag}
-                        className="bg-slate-100 text-slate-600 text-xs px-2.5 py-1 rounded-md font-medium"
+                        className="bg-[#f5f5f7] dark:bg-[#2c2c2e] text-[#6e6e73] dark:text-[#a1a1a6] text-xs px-3 py-1.5 rounded-full font-medium"
                       >
                         {tag}
                       </span>
                     ))}
                   </div>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             ))}
           </div>
         </div>

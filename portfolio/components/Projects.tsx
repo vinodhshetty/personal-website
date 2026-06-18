@@ -1,3 +1,8 @@
+"use client";
+
+import { motion, useInView } from "framer-motion";
+import { useRef, useState } from "react";
+
 const projects = [
   {
     title: "DoctusTech Agentic Healthcare Platform",
@@ -10,7 +15,7 @@ const projects = [
       "Multi-agent orchestration powering real-time healthcare decision support",
     ],
     tags: ["Agentic AI", "LLM", "RAG", "Healthcare", "Engineering Management"],
-    link: null,
+    gradient: "from-blue-500/10 to-indigo-500/10 dark:from-blue-500/5 dark:to-indigo-500/5",
   },
   {
     title: "Clinical Education Mobile Platform",
@@ -23,7 +28,7 @@ const projects = [
       "Scaled platform reach through analytics integration and feature expansion",
     ],
     tags: ["Android", "Kotlin", "Jetpack Compose", "MVVM", "Firebase"],
-    link: null,
+    gradient: "from-cyan-500/10 to-blue-500/10 dark:from-cyan-500/5 dark:to-blue-500/5",
   },
   {
     title: "PublicPosts",
@@ -36,7 +41,7 @@ const projects = [
       "Real-time messaging, blood volunteering, COVID-19 tools, and trending topics",
     ],
     tags: ["0-to-1", "Social Platform", "Android", "Marketplace", "Founder"],
-    link: null,
+    gradient: "from-violet-500/10 to-purple-500/10 dark:from-violet-500/5 dark:to-purple-500/5",
   },
   {
     title: "Just For You",
@@ -49,71 +54,138 @@ const projects = [
       "Validated product-market fit through rapid iteration",
     ],
     tags: ["GPS", "Android", "Real-time", "Service Marketplace", "Co-founder"],
-    link: null,
+    gradient: "from-emerald-500/10 to-teal-500/10 dark:from-emerald-500/5 dark:to-teal-500/5",
   },
 ];
 
 const roleBadgeColors: Record<string, string> = {
-  "Led": "bg-[#1E3A5F] text-white",
-  "Built & Led": "bg-[#1E3A5F] text-white",
-  "Founded & Built": "bg-blue-700 text-white",
-  "Co-founded": "bg-slate-600 text-white",
-  "Built": "bg-slate-700 text-white",
+  "Led": "bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f]",
+  "Built & Led": "bg-[#1d1d1f] dark:bg-[#f5f5f7] text-white dark:text-[#1d1d1f]",
+  "Founded & Built": "bg-gradient-to-r from-[#1E3A5F] to-[#2563eb] text-white",
+  "Co-founded": "bg-[#6e6e73] dark:bg-[#86868b] text-white dark:text-[#1d1d1f]",
 };
 
-export default function Projects() {
+function ProjectCard({
+  project,
+  index,
+  isInView,
+}: {
+  project: (typeof projects)[0];
+  index: number;
+  isInView: boolean;
+}) {
+  const [isHovered, setIsHovered] = useState(false);
+
   return (
-    <section id="projects" className="py-24 px-6 bg-white">
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : {}}
+      transition={{
+        duration: 0.7,
+        delay: 0.15 * index,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="group relative"
+    >
+      <motion.div
+        animate={isHovered ? { y: -6 } : { y: 0 }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        className={`bg-gradient-to-br ${project.gradient} dark:bg-[#1c1c1e] rounded-3xl p-8 border border-[#e8e8ed] dark:border-[#2c2c2e] hover:border-[#d2d2d7] dark:hover:border-[#48484a] transition-all duration-500 flex flex-col h-full relative overflow-hidden`}
+        style={{
+          boxShadow: isHovered
+            ? "0 20px 60px rgba(0, 0, 0, 0.15)"
+            : "0 2px 20px rgba(0, 0, 0, 0.04)",
+        }}
+      >
+        <div className="flex items-start justify-between mb-5">
+          <span
+            className={`text-[10px] font-bold px-3 py-1.5 rounded-full uppercase tracking-wider ${
+              roleBadgeColors[project.role] ?? "bg-[#e8e8ed] dark:bg-[#38383a] text-[#6e6e73] dark:text-[#a1a1a6]"
+            }`}
+          >
+            {project.role}
+          </span>
+        </div>
+
+        <h3 className="text-xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-3 tracking-tight">
+          {project.title}
+        </h3>
+        <p className="text-[#6e6e73] dark:text-[#a1a1a6] text-sm leading-relaxed mb-6">
+          {project.description}
+        </p>
+
+        <ul className="space-y-3 mb-6 flex-1">
+          {project.outcomes.map((outcome, i) => (
+            <motion.li
+              key={outcome}
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.3 + index * 0.15 + i * 0.1 }}
+              className="flex items-start gap-2.5 text-sm text-[#6e6e73] dark:text-[#a1a1a6]"
+            >
+              <svg
+                className="w-4 h-4 text-[#1E3A5F] dark:text-blue-400 mt-0.5 flex-shrink-0"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
+              {outcome}
+            </motion.li>
+          ))}
+        </ul>
+
+        <div className="flex flex-wrap gap-2">
+          {project.tags.map((tag) => (
+            <span
+              key={tag}
+              className="bg-white/60 dark:bg-white/5 backdrop-blur-sm text-[#6e6e73] dark:text-[#86868b] text-xs px-3 py-1.5 rounded-full border border-white/40 dark:border-white/10 font-medium"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+export default function Projects() {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px" });
+
+  return (
+    <section id="projects" className="py-32 px-6 bg-white dark:bg-[#0a0a0a] transition-colors duration-500" ref={ref}>
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-slate-900 mb-2">Featured Projects</h2>
-        <div className="w-12 h-1 bg-[#1E3A5F] mb-10 rounded-full" />
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8, ease: [0.25, 0.1, 0.25, 1] }}
+        >
+          <p className="text-[#6e6e73] dark:text-[#86868b] font-medium text-sm tracking-[0.2em] uppercase mb-3">
+            Work
+          </p>
+          <h2 className="text-4xl md:text-5xl font-bold text-[#1d1d1f] dark:text-[#f5f5f7] mb-16 tracking-tight">
+            Featured projects.
+          </h2>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          {projects.map((project) => (
-            <div
+          {projects.map((project, i) => (
+            <ProjectCard
               key={project.title}
-              className="bg-slate-50 rounded-2xl p-8 border border-slate-100 hover:shadow-md transition-shadow flex flex-col"
-            >
-              {/* Role badge */}
-              <div className="flex items-start justify-between mb-4">
-                <span
-                  className={`text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide ${
-                    roleBadgeColors[project.role] ?? "bg-slate-200 text-slate-700"
-                  }`}
-                >
-                  {project.role}
-                </span>
-              </div>
-
-              <h3 className="text-xl font-bold text-slate-900 mb-3">{project.title}</h3>
-              <p className="text-slate-600 text-sm leading-relaxed mb-5">{project.description}</p>
-
-              {/* Outcomes */}
-              <ul className="space-y-2 mb-6 flex-1">
-                {project.outcomes.map((outcome) => (
-                  <li key={outcome} className="flex items-start gap-2 text-sm text-slate-600">
-                    <span className="text-[#1E3A5F] mt-1 flex-shrink-0">
-                      <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                      </svg>
-                    </span>
-                    {outcome}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Tags */}
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-white border border-slate-200 text-slate-600 text-xs px-2.5 py-1 rounded-md"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            </div>
+              project={project}
+              index={i}
+              isInView={isInView}
+            />
           ))}
         </div>
       </div>
