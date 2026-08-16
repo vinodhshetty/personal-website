@@ -18,7 +18,6 @@ export default function Contact() {
         <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-[#1E3A5F]/20 rounded-full blur-[120px]" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-[#7c3aed]/10 rounded-full blur-[100px]" />
       </div>
-
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <motion.p
           initial={{ opacity: 0, y: 20 }}
@@ -48,7 +47,6 @@ export default function Contact() {
           transition={{ duration: 0.8, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           className="text-[#86868b] text-lg max-w-xl mx-auto mb-14 leading-relaxed"
         >
-          I&apos;m open to Engineering Manager, Product Manager, and TPM opportunities.
           If you&apos;re building something ambitious — let&apos;s talk.
         </motion.p>
 
